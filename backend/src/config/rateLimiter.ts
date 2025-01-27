@@ -1,10 +1,18 @@
+import { createClient } from "redis";
 import rateLimit from "express-rate-limit";
 import RedisStore from "rate-limit-redis";
-import { createClient } from "redis";
 import { logger } from "../utils/logger";
 
 const redisClient = createClient({
   url: process.env.REDIS_URL ?? "redis://localhost:6379",
+});
+
+redisClient.connect().catch((err) => {
+  logger.error("Failed to connect to Redis", err);
+});
+
+redisClient.on("error", (err) => {
+  logger.error("Redis client error", err);
 });
 
 export const shortenLimiter = rateLimit({

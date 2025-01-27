@@ -4,14 +4,13 @@ import { Request, Response } from "express";
 import User from "../models/userModel";
 import { logger } from "../utils/logger";
 
-const JWT_SECRET = process.env.JWT_SECRET ?? "secret";
-
 /**
  * Generate JWT
  * @param userId - ID of the user
  * @returns Signed JWT
  */
 const generateToken = (userId: string): string => {
+  const JWT_SECRET = process.env.JWT_SECRET ?? "secret";
   return jwt.sign({ userId }, JWT_SECRET, { expiresIn: "1h" });
 };
 
@@ -91,6 +90,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     res.json({
       success: true,
       token,
+      userId: user?._id,
     });
   } catch (error) {
     handleError(res, error as Error, "Error retrieving user data");
@@ -101,6 +101,7 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
   try {
     // Get token from the Authorization header
     const token = req.headers.authorization?.split(" ")[1];
+    const JWT_SECRET = process.env.JWT_SECRET ?? "secret";
     if (!token) {
       logger.warn("Get user failed - Token missing");
       res.status(401).json({ success: false, message: "Token is missing" });

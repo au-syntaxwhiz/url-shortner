@@ -3,8 +3,6 @@ import Url from "../models/urlModel";
 import { generateSlug } from "../utils/validationUtils";
 import { logger } from "../utils/logger";
 
-const BASE_URL = process.env.BASE_URL;
-
 /**
  * Creates a new shortened URL.
  * @param req - Express request object
@@ -15,8 +13,8 @@ export const createShortUrl = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { originalUrl, slug: customSlug } = req.body;
-  const userId = (req as Request & { userId: string | undefined }).userId;
+  const { originalUrl, slug: customSlug, userId } = req.body;
+  const BASE_URL = process.env.BASE_URL;
 
   try {
     const slug = customSlug || generateSlug();

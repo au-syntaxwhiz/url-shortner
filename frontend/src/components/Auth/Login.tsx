@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { login } from "../../services/authService";
 import { TextField, Button, Alert, Box, Typography, Link } from "@mui/material";
-import { setToken } from "../../utils/token";
+import { setToken, setUserId } from "../../utils/token";
 import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
@@ -16,6 +16,7 @@ const Login: React.FC = () => {
     try {
       const response = await login(email, password);
       setToken(response?.token);
+      setUserId(response?.userId);
       navigate("/dashboard");
     } catch (err: any) {
       setError(err.response?.data?.message || "Login failed.");
