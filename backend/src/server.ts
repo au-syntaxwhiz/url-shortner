@@ -1,5 +1,12 @@
 import app from "./app";
+import dotenv from "dotenv";
+import { logger } from "./utils/logger";
 
-app.listen(8000, () => {
-  console.log("Server is running at http://localhost:8000");
+dotenv.config();
+
+const PORT = process.env.PORT ?? 8000;
+const BASE_URL = process.env.BASE_URL;
+
+app.listen(PORT, () => {
+  logger.info(`Server is running at ${BASE_URL}`);
 });

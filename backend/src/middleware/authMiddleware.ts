@@ -20,11 +20,11 @@ export const authenticateUser = (
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret") as {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET ?? "secret") as {
       userId: string;
     };
 
-    req.userId = decoded.userId; // Attach user ID to the request object
+    req.userId = decoded.userId;
     next();
   } catch (error) {
     res

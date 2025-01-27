@@ -8,6 +8,13 @@ services:
       - mongo
     environment:
       - MONGO_URI=mongodb://mongo:27017/url-shortener
+      - REDIS_URL=redis://redis:6379
+      - RATE_LIMIT_WINDOW_MS=900000
+      - RATE_LIMIT_MAX=50
+      - RATE_LIMIT_MESSAGE="Too many URL shortening requests, please try again later"
+      - BASE_URL=http://localhost:8000
+      - JWT_SECRET=your-secret-key
+      - PORT=8000
 
   # MongoDB service
   mongo:
@@ -16,6 +23,12 @@ services:
       - mongo_data:/data/db
     ports:
       - "27017:27017"
+
+  # Redis service
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
 
   # Frontend service
   frontend:

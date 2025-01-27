@@ -1,10 +1,33 @@
 import rateLimit from "express-rate-limit";
+import RedisStore from "rate-limit-redis";
+import { createClient } from "redis";
+import { logger } from "../utils/logger";
+
+const redisClient = createClient({
+  url: process.env.REDIS_URL ?? "redis://localhost:6379",
+});
 
 export const shortenLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 50,
-  message: "Too many URL shortening requests, please try again later",
+  store: new RedisStore({
+    sendCommand: (...args) => redisClient.sendCommand(args),
+  }),
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS ?? "900000"),
+  max: parseInt(process.env.RATE_LIMIT_MAX ?? "50"),
+  message:
+    process.env.RATE_LIMIT_MESSAGE ??
+    "Too many URL shortening requests, please try again later",
   handler: (req, res, next, options) => {
-    res.status(options.statusCode).send(options.message);
+    logger.warn("Rate limit exceeded", {
+      ip: req.ip,
+      path: req.originalUrl,
+      method: req.method,
+      statusCode: options.statusCode,
+    });
+
+    res.setHeader("Retry-After", Math.ceil(options.windowMs / 1000));
+    res.status(options.statusCode).json({
+      success: false,
+      message: options.message,
+    });
   },
 });
