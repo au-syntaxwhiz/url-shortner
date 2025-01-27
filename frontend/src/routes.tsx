@@ -4,7 +4,7 @@ import NotFound from "./pages/NotFound";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Login from "./components/Auth/Login";
-import Register from "./pages/Register";
+import Register from "./components/Auth/Register";
 
 const AppRoutes: React.FC = () => (
   <Router>

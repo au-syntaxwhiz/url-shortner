@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { register } from "../services/authService";
+import { register } from "../../services/authService";
 import { TextField, Button, Alert, Box, Typography, Link } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
